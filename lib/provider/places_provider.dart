@@ -3,7 +3,15 @@ import "package:services/models/place_model.dart";
 import "package:services/data/dummy_data.dart";
 
 class PlacesNotifier extends StateNotifier<List<Place>> {
-  PlacesNotifier() : super([...places_data]);
+  PlacesNotifier() : super([...placesData]);
+
+  void addPlace(Place place) {
+    state = [...state, place];
+  }
+
+  void removePlace(Place place) {
+    state = state.where((p) => p.id != place.id).toList();
+  }
 }
 
 final placesProvider =

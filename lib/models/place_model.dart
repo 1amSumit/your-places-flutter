@@ -1,4 +1,5 @@
 class Place {
-  const Place({required this.name});
+  const Place({required this.id, required this.name});
   final String name;
+  final String id;
 }

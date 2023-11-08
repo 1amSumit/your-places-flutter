@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:services/main.dart';
 import "package:services/provider/places_provider.dart";
+import 'package:services/screens/add_place.dart';
 
 class PlacesScreen extends ConsumerStatefulWidget {
   const PlacesScreen({super.key});
@@ -35,7 +36,12 @@ class _PlacesScreenState extends ConsumerState<PlacesScreen> {
             );
           }),
       floatingActionButton: FloatingActionButton.extended(
-          onPressed: () {}, label: const Icon(Icons.add)),
+          onPressed: () {
+            Navigator.push(context, MaterialPageRoute(builder: (ctx) {
+              return const AddPlace();
+            }));
+          },
+          label: const Icon(Icons.add)),
     );
   }
 }

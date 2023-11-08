@@ -21,13 +21,13 @@ final colorSheme = ColorScheme.fromSeed(
 final theme = ThemeData().copyWith(
   useMaterial3: true,
   scaffoldBackgroundColor: colorSheme.background,
+  colorScheme: colorSheme,
   textTheme: GoogleFonts.ubuntuCondensedTextTheme().copyWith(
     titleSmall: GoogleFonts.ubuntuCondensed(
       fontWeight: FontWeight.bold,
     ),
     titleMedium: GoogleFonts.ubuntuCondensed(
-      fontWeight: FontWeight.bold,
-    ),
+        fontWeight: FontWeight.bold, color: Colors.white),
     titleLarge: GoogleFonts.ubuntuCondensed(
       fontWeight: FontWeight.bold,
     ),
