@@ -12,7 +12,7 @@ class _PlacesScreenState extends State<PlacesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(
+        title: const Center(
           child: Text("Your Places"),
         ),
       ),
