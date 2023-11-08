@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:services/main.dart';
 import "package:services/provider/places_provider.dart";
 import 'package:services/screens/add_place.dart';
+import 'package:services/screens/place_screen.dart';
 
 class PlacesScreen extends ConsumerStatefulWidget {
   const PlacesScreen({super.key});
@@ -35,7 +36,18 @@ class _PlacesScreenState extends ConsumerState<PlacesScreen> {
             },
             child: ListTile(
               leading: TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (ctx) {
+                        return PlaceScreen(
+                          title: placesData[index].name,
+                        );
+                      },
+                    ),
+                  );
+                },
                 child: Text(
                   placesData[index].name,
                   style: theme.textTheme.titleLarge!
