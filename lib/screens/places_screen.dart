@@ -27,7 +27,7 @@ class _PlacesScreenState extends ConsumerState<PlacesScreen> {
 
     if (placesData.isNotEmpty) {
       content = Padding(
-        padding: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
         child: ListView.builder(
           itemCount: placesData.length,
           itemBuilder: (context, index) {

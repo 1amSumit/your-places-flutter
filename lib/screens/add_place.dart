@@ -6,6 +6,7 @@ import 'package:services/main.dart';
 import 'package:services/models/place_model.dart';
 import 'package:services/provider/places_provider.dart';
 import 'package:services/widget/image_input.dart';
+import 'package:services/widget/location_widget.dart';
 
 class AddPlace extends ConsumerStatefulWidget {
   const AddPlace({super.key});
@@ -77,6 +78,10 @@ class _AddPlaceState extends ConsumerState<AddPlace> {
               ImageInput(
                 onCaptureImage: getImage,
               ),
+              const SizedBox(
+                height: 12,
+              ),
+              const LocationInput(),
               const SizedBox(
                 height: 12,
               ),
