@@ -26,37 +26,44 @@ class _PlacesScreenState extends ConsumerState<PlacesScreen> {
     );
 
     if (placesData.isNotEmpty) {
-      content = ListView.builder(
-        itemCount: placesData.length,
-        itemBuilder: (context, index) {
-          return Dismissible(
-            key: ValueKey(placesData[index].id),
-            onDismissed: (direction) {
-              ref.read(placesProvider.notifier).removePlace(placesData[index]);
-            },
-            child: ListTile(
-              leading: TextButton(
-                onPressed: () {
+      content = Padding(
+        padding: EdgeInsets.all(10),
+        child: ListView.builder(
+          itemCount: placesData.length,
+          itemBuilder: (context, index) {
+            return Dismissible(
+              key: ValueKey(placesData[index].id),
+              onDismissed: (direction) {
+                ref
+                    .read(placesProvider.notifier)
+                    .removePlace(placesData[index]);
+              },
+              child: ListTile(
+                leading: CircleAvatar(
+                  radius: 26,
+                  backgroundImage: FileImage(placesData[index].image),
+                ),
+                title: Text(
+                  placesData[index].name,
+                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                      color: Theme.of(context).colorScheme.onBackground),
+                ),
+                onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (ctx) {
                         return PlaceScreen(
-                          title: placesData[index].name,
+                          place: placesData[index],
                         );
                       },
                     ),
                   );
                 },
-                child: Text(
-                  placesData[index].name,
-                  style: theme.textTheme.titleLarge!
-                      .copyWith(color: Colors.white, fontSize: 18),
-                ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       );
     }
 

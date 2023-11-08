@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:services/main.dart';
@@ -15,12 +17,18 @@ class AddPlace extends ConsumerStatefulWidget {
 class _AddPlaceState extends ConsumerState<AddPlace> {
   final _formKey = GlobalKey<FormState>();
   String enteredPlaceName = "";
+  File? capturedImage;
+
+  void getImage(File image) {
+    capturedImage = image;
+  }
+
   void savePlace() {
-    if (_formKey.currentState!.validate()) {
+    if (_formKey.currentState!.validate() || capturedImage == null) {
       _formKey.currentState!.save();
 
       ref.read(placesProvider.notifier).addPlace(
-            Place(name: enteredPlaceName),
+            Place(name: enteredPlaceName, image: capturedImage!),
           );
       Navigator.pop(context);
     }
@@ -66,7 +74,9 @@ class _AddPlaceState extends ConsumerState<AddPlace> {
               const SizedBox(
                 height: 12,
               ),
-              ImageInput(),
+              ImageInput(
+                onCaptureImage: getImage,
+              ),
               const SizedBox(
                 height: 12,
               ),

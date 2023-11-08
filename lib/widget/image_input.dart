@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ImageInput extends StatefulWidget {
-  const ImageInput({super.key});
+  const ImageInput({super.key, required this.onCaptureImage});
+
+  final void Function(File image) onCaptureImage;
 
   @override
   State<ImageInput> createState() => _ImageInputState();
@@ -25,6 +27,8 @@ class _ImageInputState extends State<ImageInput> {
     setState(() {
       _takenImage = File(pickedImage.path);
     });
+
+    widget.onCaptureImage(_takenImage!);
   }
 
   @override
@@ -36,11 +40,14 @@ class _ImageInputState extends State<ImageInput> {
     );
 
     if (_takenImage != null) {
-      content = Image.file(
-        _takenImage!,
-        fit: BoxFit.cover,
-        width: double.infinity,
-        height: double.infinity,
+      content = GestureDetector(
+        onTap: _takePicture,
+        child: Image.file(
+          _takenImage!,
+          fit: BoxFit.cover,
+          width: double.infinity,
+          height: double.infinity,
+        ),
       );
     }
     return Container(
