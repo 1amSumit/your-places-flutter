@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:services/data/dummy_data.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:services/main.dart';
+import "package:services/provider/places_provider.dart";
 
-class PlacesScreen extends StatefulWidget {
+class PlacesScreen extends ConsumerStatefulWidget {
   const PlacesScreen({super.key});
 
   @override
-  State<PlacesScreen> createState() => _PlacesScreenState();
+  ConsumerState<PlacesScreen> createState() => _PlacesScreenState();
 }
 
-class _PlacesScreenState extends State<PlacesScreen> {
+class _PlacesScreenState extends ConsumerState<PlacesScreen> {
   @override
   Widget build(BuildContext context) {
+    final placesData = ref.watch(placesProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Center(
@@ -19,13 +21,13 @@ class _PlacesScreenState extends State<PlacesScreen> {
         ),
       ),
       body: ListView.builder(
-          itemCount: places_data.length,
+          itemCount: placesData.length,
           itemBuilder: (context, index) {
             return ListTile(
               leading: TextButton(
                 onPressed: () {},
                 child: Text(
-                  places_data[index].name,
+                  placesData[index].name,
                   style: theme.textTheme.titleLarge!
                       .copyWith(color: Colors.white, fontSize: 18),
                 ),

@@ -2,9 +2,14 @@ import 'package:flutter/material.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 import 'package:services/screens/places_screen.dart';
+import "package:flutter_riverpod/flutter_riverpod.dart";
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    const ProviderScope(
+      child: MyApp(),
+    ),
+  );
 }
 
 final colorSheme = ColorScheme.fromSeed(
