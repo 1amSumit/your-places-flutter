@@ -15,16 +15,25 @@ class _PlacesScreenState extends ConsumerState<PlacesScreen> {
   @override
   Widget build(BuildContext context) {
     final placesData = ref.watch(placesProvider);
-    return Scaffold(
-      appBar: AppBar(
-        title: const Center(
-          child: Text("Your Places"),
-        ),
+
+    Widget content = Center(
+      child: Text(
+        "No place add to display.",
+        style: theme.textTheme.titleLarge!
+            .copyWith(color: Colors.white, fontSize: 20),
       ),
-      body: ListView.builder(
-          itemCount: placesData.length,
-          itemBuilder: (context, index) {
-            return ListTile(
+    );
+
+    if (placesData.isNotEmpty) {
+      content = ListView.builder(
+        itemCount: placesData.length,
+        itemBuilder: (context, index) {
+          return Dismissible(
+            key: ValueKey(placesData[index].id),
+            onDismissed: (direction) {
+              ref.read(placesProvider.notifier).removePlace(placesData[index]);
+            },
+            child: ListTile(
               leading: TextButton(
                 onPressed: () {},
                 child: Text(
@@ -33,8 +42,19 @@ class _PlacesScreenState extends ConsumerState<PlacesScreen> {
                       .copyWith(color: Colors.white, fontSize: 18),
                 ),
               ),
-            );
-          }),
+            ),
+          );
+        },
+      );
+    }
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Center(
+          child: Text("Your Places"),
+        ),
+      ),
+      body: content,
       floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
             Navigator.push(context, MaterialPageRoute(builder: (ctx) {
