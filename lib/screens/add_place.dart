@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:services/main.dart';
 import 'package:services/models/place_model.dart';
 import 'package:services/provider/places_provider.dart';
+import 'package:services/widget/image_input.dart';
 
 class AddPlace extends ConsumerStatefulWidget {
   const AddPlace({super.key});
@@ -19,7 +20,7 @@ class _AddPlaceState extends ConsumerState<AddPlace> {
       _formKey.currentState!.save();
 
       ref.read(placesProvider.notifier).addPlace(
-            Place(id: DateTime.now().toString(), name: enteredPlaceName),
+            Place(name: enteredPlaceName),
           );
       Navigator.pop(context);
     }
@@ -62,6 +63,10 @@ class _AddPlaceState extends ConsumerState<AddPlace> {
                   enteredPlaceName = newPlace!;
                 },
               ),
+              const SizedBox(
+                height: 12,
+              ),
+              ImageInput(),
               const SizedBox(
                 height: 12,
               ),
