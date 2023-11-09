@@ -9,7 +9,7 @@ import 'package:services/screens/map_screen.dart';
 class LocationInput extends StatefulWidget {
   const LocationInput({super.key, required this.sendLocation});
 
-  final void Function(PlaceLoaction) sendLocation;
+  final void Function(PlaceLocation) sendLocation;
 
   @override
   State<LocationInput> createState() => _LocationInputState();
@@ -77,7 +77,7 @@ class _LocationInputState extends State<LocationInput> {
         "${placemarks[0].name} ${placemarks[0].street} ${placemarks[0].thoroughfare} ${placemarks[0].subLocality} ${placemarks[0].locality} ${placemarks[0].administrativeArea}";
 
     widget.sendLocation(
-      PlaceLoaction(
+      PlaceLocation(
           latitude: latlong!.latitude,
           longitude: latlong!.longitude,
           address: address),

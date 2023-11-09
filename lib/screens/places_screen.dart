@@ -13,6 +13,15 @@ class PlacesScreen extends ConsumerStatefulWidget {
 }
 
 class _PlacesScreenState extends ConsumerState<PlacesScreen> {
+  late Future<void> _loadPlacesFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPlacesFuture =
+        ref.read(placesProvider.notifier).loadPlacesFromDevice();
+  }
+
   @override
   Widget build(BuildContext context) {
     final placesData = ref.watch(placesProvider);
@@ -78,7 +87,14 @@ class _PlacesScreenState extends ConsumerState<PlacesScreen> {
           child: Text("Your Places"),
         ),
       ),
-      body: content,
+      body: FutureBuilder(
+          future: _loadPlacesFuture,
+          builder: ((context, snapshot) =>
+              snapshot.connectionState == ConnectionState.waiting
+                  ? const Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : content)),
       floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
             Navigator.push(context, MaterialPageRoute(builder: (ctx) {

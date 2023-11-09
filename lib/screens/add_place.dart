@@ -20,13 +20,13 @@ class _AddPlaceState extends ConsumerState<AddPlace> {
   String enteredPlaceName = "";
   File? capturedImage;
 
-  PlaceLoaction? location;
+  PlaceLocation? location;
 
   void getImage(File image) {
     capturedImage = image;
   }
 
-  void getLocation(PlaceLoaction gotLocation) {
+  void getLocation(PlaceLocation gotLocation) {
     location = gotLocation;
   }
 
@@ -34,12 +34,10 @@ class _AddPlaceState extends ConsumerState<AddPlace> {
     if (_formKey.currentState!.validate() || capturedImage == null) {
       _formKey.currentState!.save();
 
-      ref.read(placesProvider.notifier).addPlace(
-            Place(
-                name: enteredPlaceName,
-                image: capturedImage!,
-                location: location!),
-          );
+      ref
+          .read(placesProvider.notifier)
+          .addPlace(enteredPlaceName, capturedImage!, location!);
+
       Navigator.pop(context);
     }
   }
