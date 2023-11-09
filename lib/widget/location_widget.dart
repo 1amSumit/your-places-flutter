@@ -1,5 +1,9 @@
 import "package:flutter/material.dart";
-import 'package:location/location.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
+// import 'package:url_launcher/url_launcher.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
 
 class LocationInput extends StatefulWidget {
   const LocationInput({super.key});
@@ -9,43 +13,63 @@ class LocationInput extends StatefulWidget {
 }
 
 class _LocationInputState extends State<LocationInput> {
-  Location? _pickedLocation;
-  bool _isGettingLocation = false;
+  bool isGettingLocation = false;
+  LatLng? latlong;
 
-  void getCurrentLocation() async {
-    Location location = Location();
+  Position? position;
 
+  String address = "";
+
+  Future<Position> _determinePosition() async {
     bool serviceEnabled;
-    PermissionStatus permissionGranted;
-    LocationData locationData;
-
-    serviceEnabled = await location.serviceEnabled();
+    LocationPermission permission;
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      serviceEnabled = await location.requestService();
-      if (!serviceEnabled) {
-        return;
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
       }
     }
 
-    permissionGranted = await location.hasPermission();
-    if (permissionGranted == PermissionStatus.denied) {
-      permissionGranted = await location.requestPermission();
-      if (permissionGranted != PermissionStatus.granted) {
-        return;
-      }
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
     }
 
+    return await Geolocator.getCurrentPosition();
+  }
+
+  void getCurrentPosition() async {
     setState(() {
-      _isGettingLocation = true;
+      isGettingLocation = true;
+    });
+    position = await _determinePosition();
+
+    setState(() {
+      isGettingLocation = false;
     });
 
-    locationData = await location.getLocation();
+    if (position == null) {
+      return;
+    }
 
-    setState(() {
-      _isGettingLocation = false;
-    });
-    print(locationData.latitude);
-    print(locationData.longitude);
+    latlong = LatLng(position!.latitude, position!.longitude);
+
+    getAddress(latlong);
+  }
+
+  void getAddress(LatLng? latLong) async {
+    List<Placemark> placemarks =
+        await placemarkFromCoordinates(latLong!.latitude, latLong.longitude);
+
+    address =
+        "${placemarks[0].name} ${placemarks[0].street} ${placemarks[0].thoroughfare} ${placemarks[0].subLocality} ${placemarks[0].locality} ${placemarks[0].administrativeArea}";
+    print(address);
   }
 
   @override
@@ -58,10 +82,41 @@ class _LocationInputState extends State<LocationInput> {
           .bodyLarge!
           .copyWith(color: Theme.of(context).colorScheme.onBackground),
     );
-
-    if (_isGettingLocation) {
+    if (isGettingLocation) {
       previewContent = CircularProgressIndicator();
     }
+
+    if (latlong != null) {
+      previewContent = FlutterMap(
+        options: MapOptions(
+          initialCenter: LatLng(latlong!.latitude, latlong!.longitude),
+          initialZoom: 16,
+        ),
+        children: [
+          TileLayer(
+            urlTemplate:
+                'https://api.mapbox.com/styles/v1/sumit0718/clooap5f300fd01pmcn8i7yl4/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1Ijoic3VtaXQwNzE4IiwiYSI6ImNrdmVybDluMDM1bWYycm9rbnhjZ2l0YmYifQ.vL8_bdMZTKYtRALXWIE7WA',
+            additionalOptions: const {
+              "accessToken":
+                  "pk.eyJ1Ijoic3VtaXQwNzE4IiwiYSI6ImNrdmVybDluMDM1bWYycm9rbnhjZ2l0YmYifQ.vL8_bdMZTKYtRALXWIE7WA"
+            },
+          ),
+          MarkerLayer(
+            markers: [
+              Marker(
+                point: LatLng(latlong!.latitude, latlong!.longitude),
+                child: Icon(
+                  Icons.pin_drop_rounded,
+                  color: Colors.red[900],
+                  size: 35,
+                ),
+              ),
+            ],
+          ),
+        ],
+      );
+    }
+
     return Column(
       children: [
         Container(
@@ -79,7 +134,7 @@ class _LocationInputState extends State<LocationInput> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             TextButton.icon(
-              onPressed: () {},
+              onPressed: getCurrentPosition,
               icon: const Icon(Icons.location_on),
               label: const Text("Get current location"),
             ),
