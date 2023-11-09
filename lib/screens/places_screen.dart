@@ -39,13 +39,18 @@ class _PlacesScreenState extends ConsumerState<PlacesScreen> {
                     .removePlace(placesData[index]);
               },
               child: ListTile(
+                subtitle: Text(
+                  placesData[index].location.address,
+                  style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                      color: Theme.of(context).colorScheme.onBackground),
+                ),
                 leading: CircleAvatar(
                   radius: 26,
                   backgroundImage: FileImage(placesData[index].image),
                 ),
                 title: Text(
                   placesData[index].name,
-                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
                       color: Theme.of(context).colorScheme.onBackground),
                 ),
                 onTap: () {

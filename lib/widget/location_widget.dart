@@ -1,12 +1,15 @@
 import "package:flutter/material.dart";
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-// import 'package:url_launcher/url_launcher.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
+import "package:services/models/place_model.dart";
+import 'package:services/screens/map_screen.dart';
 
 class LocationInput extends StatefulWidget {
-  const LocationInput({super.key});
+  const LocationInput({super.key, required this.sendLocation});
+
+  final void Function(PlaceLoaction) sendLocation;
 
   @override
   State<LocationInput> createState() => _LocationInputState();
@@ -69,7 +72,13 @@ class _LocationInputState extends State<LocationInput> {
 
     address =
         "${placemarks[0].name} ${placemarks[0].street} ${placemarks[0].thoroughfare} ${placemarks[0].subLocality} ${placemarks[0].locality} ${placemarks[0].administrativeArea}";
-    print(address);
+
+    widget.sendLocation(
+      PlaceLoaction(
+          latitude: latlong!.latitude,
+          longitude: latlong!.longitude,
+          address: address),
+    );
   }
 
   @override
@@ -120,7 +129,7 @@ class _LocationInputState extends State<LocationInput> {
     return Column(
       children: [
         Container(
-          height: 170,
+          height: 150,
           width: double.infinity,
           alignment: Alignment.center,
           decoration: BoxDecoration(
@@ -139,7 +148,16 @@ class _LocationInputState extends State<LocationInput> {
               label: const Text("Get current location"),
             ),
             TextButton.icon(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (ctx) {
+                      return MapScreen();
+                    },
+                  ),
+                );
+              },
               icon: const Icon(Icons.map),
               label: const Text("Select on map"),
             )

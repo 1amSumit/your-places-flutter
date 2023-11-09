@@ -20,8 +20,14 @@ class _AddPlaceState extends ConsumerState<AddPlace> {
   String enteredPlaceName = "";
   File? capturedImage;
 
+  PlaceLoaction? location;
+
   void getImage(File image) {
     capturedImage = image;
+  }
+
+  void getLocation(PlaceLoaction gotLocation) {
+    location = gotLocation;
   }
 
   void savePlace() {
@@ -29,7 +35,10 @@ class _AddPlaceState extends ConsumerState<AddPlace> {
       _formKey.currentState!.save();
 
       ref.read(placesProvider.notifier).addPlace(
-            Place(name: enteredPlaceName, image: capturedImage!),
+            Place(
+                name: enteredPlaceName,
+                image: capturedImage!,
+                location: location!),
           );
       Navigator.pop(context);
     }
@@ -38,13 +47,14 @@ class _AddPlaceState extends ConsumerState<AddPlace> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Center(
           child: Text("Add New Place"),
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(18),
+        padding: const EdgeInsets.only(top: 22, left: 22, right: 22),
         child: Form(
           key: _formKey,
           child: Column(
@@ -81,7 +91,9 @@ class _AddPlaceState extends ConsumerState<AddPlace> {
               const SizedBox(
                 height: 12,
               ),
-              const LocationInput(),
+              LocationInput(
+                sendLocation: getLocation,
+              ),
               const SizedBox(
                 height: 12,
               ),
