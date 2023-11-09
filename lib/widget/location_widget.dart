@@ -66,9 +66,12 @@ class _LocationInputState extends State<LocationInput> {
     getAddress(latlong);
   }
 
-  void getAddress(LatLng? latLong) async {
+  void getAddress(LatLng? latlng) async {
+    setState(() {
+      latlong = latlng;
+    });
     List<Placemark> placemarks =
-        await placemarkFromCoordinates(latLong!.latitude, latLong.longitude);
+        await placemarkFromCoordinates(latlng!.latitude, latlng.longitude);
 
     address =
         "${placemarks[0].name} ${placemarks[0].street} ${placemarks[0].thoroughfare} ${placemarks[0].subLocality} ${placemarks[0].locality} ${placemarks[0].administrativeArea}";
@@ -153,7 +156,9 @@ class _LocationInputState extends State<LocationInput> {
                   context,
                   MaterialPageRoute(
                     builder: (ctx) {
-                      return MapScreen();
+                      return MapScreen(
+                        sendCords: getAddress,
+                      );
                     },
                   ),
                 );

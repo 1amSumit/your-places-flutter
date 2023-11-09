@@ -4,7 +4,9 @@ import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 
 class MapScreen extends StatefulWidget {
-  const MapScreen({super.key});
+  const MapScreen({super.key, required this.sendCords});
+
+  final void Function(LatLng) sendCords;
 
   @override
   State<MapScreen> createState() => _MapScreenState();
@@ -16,6 +18,12 @@ class _MapScreenState extends State<MapScreen> {
   bool isGettingLocation = false;
 
   Position? position;
+
+  void sendCordsToLocation() {
+    widget.sendCords(LatLng(latitude, longitude));
+
+    Navigator.pop(context);
+  }
 
   Future<Position> _determinePosition() async {
     bool serviceEnabled;
@@ -113,7 +121,9 @@ class _MapScreenState extends State<MapScreen> {
       appBar: AppBar(
         title: const Text("Select Location"),
         actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.fork_right))
+          IconButton(
+              onPressed: sendCordsToLocation,
+              icon: const Icon(Icons.save_as_rounded))
         ],
       ),
       body: mapContent,
